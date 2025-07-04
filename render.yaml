@@ -1,0 +1,48 @@
+services:
+  # A PostgreSQL database
+  - type: pserv
+    name: database
+    env: postgres
+    plan: starter
+    postgres:
+      version: 16
+
+  # The EverShop web service
+  - type: web
+    name: evershop
+    env: docker
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    initialDeployHook: npm run setup
+    envVars:
+      - key: ADMIN_FULL_NAME
+        value: "admin"
+      - key: ADMIN_EMAIL
+        value: "khoualdiyassin26@gmail.com"
+      - key: ADMIN_PASSWORD
+        value: "admin123"
+      - key: DB_HOST
+        fromService:
+          type: pserv
+          name: database
+          property: host
+      - key: DB_PORT
+        fromService:
+          type: pserv
+          name: database
+          property: port
+      - key: DB_USER
+        fromService:
+          type: pserv
+          name: database
+          property: user
+      - key: DB_PASSWORD
+        fromService:
+          type: pserv
+          name: database
+          property: password
+      - key: DB_NAME
+        fromService:
+          type: pserv
+          name: database
+          property: database
